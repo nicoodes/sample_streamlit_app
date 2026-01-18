@@ -1,5 +1,18 @@
 import os
+import sys
+from datetime import datetime, timedelta
 import streamlit as st
+
+# Make `src` importable so we can import `tenis_api` without requiring it to be a package
+# This works when running `streamlit run app.py` from the project root.
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
+st.set_page_config(page_title="Sample app api", layout="wide")
+
+try:
+    from tenis_api import get_fixtures
+except Exception:
+    # If import fails, set placeholder to None and show an error later when fetching
+    get_fixtures = None
 def get_secret(key: str, env_var: str | None = None):
     """Return secret from Streamlit secrets if available, otherwise from env.
 
@@ -46,6 +59,39 @@ if st.session_state.logged_in or ("show_logged_in" in locals() and show_logged_i
     st.success("Logged in")
     st.write("Welcome — this is a minimal sample app.")
     st.markdown("---")
-    name = st.text_input("Type your name")
-    if name:
-        st.write(f"Hello, {name}!")
+    # --- Fixtures UI ---
+    st.header("Fetch Tennis Fixtures")
+
+    # Date selectors using Streamlit's date_input (converts to string for the API)
+    default_start = datetime(2026, 1, 1).date()
+    default_stop = (datetime(2026, 1, 1) + timedelta(days=1)).date()
+
+    date_start = st.date_input("Start date", value=default_start)
+    date_stop = st.date_input("Stop date", value=default_stop)
+
+    # Convert date objects to YYYY-MM-DD strings for the API
+    date_start_str = date_start.strftime("%Y-%m-%d")
+    date_stop_str = date_stop.strftime("%Y-%m-%d")
+
+    # Player key input: default empty string (numbers entered will be kept as strings)
+    player_key = st.text_input("Player key", value="")
+
+    # Fetch button and results
+    if st.button("Fetch fixtures"):
+        if get_fixtures is None:
+            st.error("Could not import `get_fixtures` from `src/tenis_api.py`. Ensure the file exists.")
+        else:
+            with st.spinner("Fetching fixtures..."):
+                df = get_fixtures(date_start=date_start_str, date_stop=date_stop_str, player_key=player_key)
+            if df is None:
+                st.info("No data returned.")
+            else:
+                st.session_state.fixtures_df = df
+
+    # Show table if available in session state
+    if "fixtures_df" in st.session_state:
+        st.subheader("Fixtures")
+        st.dataframe(st.session_state.fixtures_df)
+        csv = st.session_state.fixtures_df.to_csv(index=False).encode("utf-8")
+        st.download_button("Download CSV", data=csv, file_name="fixtures.csv", mime="text/csv")
+
