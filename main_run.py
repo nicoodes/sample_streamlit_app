@@ -30,7 +30,7 @@ def fetch_and_insert_today_fixtures():
     # Get today's date in YYYY-MM-DD format
     today = datetime.now().strftime("%Y-%m-%d")
     
-    print(f"Fetching fixtures for {today}...")
+    print(f"Fetching fixtures forrrrrrrr {today}...")
     
     # Fetch fixtures for today
     df = get_fixtures(date_start=today, date_stop=today)

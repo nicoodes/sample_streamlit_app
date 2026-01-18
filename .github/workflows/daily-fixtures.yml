@@ -35,4 +35,4 @@ jobs:
           DB_PORT: ${{ secrets.DB_PORT }}
           DB_NAME: ${{ secrets.DB_NAME }}
           API_KEY: ${{ secrets.API_KEY }}
-        run: uv run python main.py
+        run: uv run python main_run.py
