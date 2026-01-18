@@ -1,0 +1,40 @@
+name: Fetch Daily Tennis Fixtures
+
+on:
+  schedule:
+    # Runs at 8:00 AM UTC every day
+    - cron: '0 8 * * *'
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  fetch-fixtures:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: '.python-version'
+      
+      - name: Install dependencies
+        run: uv sync
+      
+      - name: Create .env file
+        run: |
+          echo "user=${{ secrets.DB_USER }}" >> .env
+          echo "password=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "host=${{ secrets.DB_HOST }}" >> .env
+          echo "port=${{ secrets.DB_PORT }}" >> .env
+          echo "dbname=${{ secrets.DB_NAME }}" >> .env
+          echo "API_KEY=${{ secrets.API_KEY }}" >> .env
+      
+      - name: Run main script
+        run: uv run python main.py
