@@ -1,0 +1,10 @@
+[project]
+name = "streamlit-deploy"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "python-dotenv>=1.2.1",
+    "streamlit>=1.53.0",
+]
