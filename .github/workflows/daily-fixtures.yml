@@ -27,14 +27,12 @@ jobs:
       - name: Install dependencies
         run: uv sync
       
-      - name: Create .env file
-        run: |
-          echo "user=${{ secrets.DB_USER }}" >> .env
-          echo "password=${{ secrets.DB_PASSWORD }}" >> .env
-          echo "host=${{ secrets.DB_HOST }}" >> .env
-          echo "port=${{ secrets.DB_PORT }}" >> .env
-          echo "dbname=${{ secrets.DB_NAME }}" >> .env
-          echo "API_KEY=${{ secrets.API_KEY }}" >> .env
-      
       - name: Run main script
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          API_KEY: ${{ secrets.API_KEY }}
         run: uv run python main.py
