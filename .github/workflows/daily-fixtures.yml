@@ -29,10 +29,10 @@ jobs:
       
       - name: Run main script
         env:
-          USER: ${{ secrets.USER }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-          HOST: ${{ secrets.HOST }}
-          PORT: ${{ secrets.PORT }}
-          DBNAME: ${{ secrets.DBNAME }}
+          DB_USER: ${{ secrets.USER }}
+          DB_PASSWORD: ${{ secrets.PASSWORD }}
+          DB_HOST: ${{ secrets.HOST }}
+          DB_PORT: ${{ secrets.PORT }}
+          DB_NAME: ${{ secrets.DBNAME }}
           API_KEY: ${{ secrets.API_KEY }}
         run: uv run python main.py
