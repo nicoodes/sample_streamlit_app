@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 # Load environment variables from .env
 load_dotenv()
 
-
 def get_db_connection():
     """Create and return a database connection using credentials from .env file."""
     DB_USER = os.getenv("DB_USER")
@@ -15,6 +14,37 @@ def get_db_connection():
     DB_HOST = os.getenv("DB_HOST")
     DB_PORT = os.getenv("DB_PORT")
     DB_NAME = os.getenv("DB_NAME")
+    
+    # Debug: Print what we got (remove password from logs!)
+    print(f"DB_USER: {DB_USER is not None and len(DB_USER) > 0}")
+    print(f"DB_PASSWORD: {DB_PASSWORD is not None and len(DB_PASSWORD) > 0}")
+    print(f"DB_HOST: {DB_HOST}")
+    print(f"DB_PORT: {DB_PORT}")
+    print(f"DB_NAME: {DB_NAME}")
+    
+    # Validate that all required env vars are present and not empty
+    missing_vars = []
+    if not DB_USER or DB_USER.strip() == "":
+        missing_vars.append("DB_USER")
+    if not DB_PASSWORD or DB_PASSWORD.strip() == "":
+        missing_vars.append("DB_PASSWORD")
+    if not DB_HOST or DB_HOST.strip() == "":
+        missing_vars.append("DB_HOST")
+    if not DB_PORT or DB_PORT.strip() == "":
+        missing_vars.append("DB_PORT")
+    if not DB_NAME or DB_NAME.strip() == "":
+        missing_vars.append("DB_NAME")
+    
+    if missing_vars:
+        raise ValueError(f"Missing or empty environment variables: {', '.join(missing_vars)}")
+    
+    # Ensure PORT is treated as integer
+    try:
+        port_int = int(DB_PORT)
+    except (ValueError, TypeError):
+        raise ValueError(f"DB_PORT must be a valid integer, got: {DB_PORT}")
+    
+    print(f"Attempting to connect to {DB_HOST}:{port_int}/{DB_NAME} as user {DB_USER[0:12]}")
     
     connection = psycopg2.connect(
         user=DB_USER,
@@ -24,7 +54,6 @@ def get_db_connection():
         dbname=DB_NAME
     )
     return connection
-
 
 def insert_dataframe_to_db(df: pd.DataFrame, schema: str, table_name: str) -> dict:
     """
