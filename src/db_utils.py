@@ -50,7 +50,7 @@ def get_db_connection():
         user=DB_USER,
         password=DB_PASSWORD,
         host=DB_HOST,
-        port=DB_PORT,
+        port=port_int,  # Use the integer version
         dbname=DB_NAME
     )
     return connection
