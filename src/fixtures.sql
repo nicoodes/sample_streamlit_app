@@ -1,0 +1,26 @@
+-- Create table for tennis fixtures data
+CREATE TABLE IF NOT EXISTS sample.fixtures (
+    results_for_player_key VARCHAR(255),
+    event_key INT,
+    event_date DATE,
+    event_time VARCHAR(10),
+    event_first_player VARCHAR(255),
+    first_player_key INT,
+    event_second_player VARCHAR(255),
+    second_player_key INT,
+    event_final_result VARCHAR(50),
+    event_game_result VARCHAR(50),
+    event_serve VARCHAR(50),
+    event_winner VARCHAR(255),
+    event_status VARCHAR(50),
+    event_type_type VARCHAR(100),
+    tournament_name VARCHAR(255),
+    tournament_key INT,
+    tournament_round VARCHAR(255),
+    tournament_season VARCHAR(20),
+    event_live INT,
+    event_qualification BOOLEAN,
+    event_first_player_logo VARCHAR(500),
+    event_second_player_logo VARCHAR(500),
+    load_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
