@@ -51,7 +51,8 @@ def get_db_connection():
         password=DB_PASSWORD,
         host=DB_HOST,
         port=port_int,  # Use the integer version
-        dbname=DB_NAME
+        dbname=DB_NAME,
+        sslmode='require'
     )
     return connection
 
