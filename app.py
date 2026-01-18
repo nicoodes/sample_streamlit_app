@@ -2,6 +2,7 @@ import os
 import sys
 from datetime import datetime, timedelta
 import streamlit as st
+import plotly.express as px
 
 # Make `src` importable so we can import `tenis_api` without requiring it to be a package
 # This works when running `streamlit run app.py` from the project root.
@@ -63,8 +64,8 @@ if st.session_state.logged_in or ("show_logged_in" in locals() and show_logged_i
     st.header("Fetch Tennis Fixtures")
 
     # Date selectors using Streamlit's date_input (converts to string for the API)
-    default_start = datetime(2026, 1, 1).date()
-    default_stop = (datetime(2026, 1, 1) + timedelta(days=1)).date()
+    default_start = datetime.now().date()
+    default_stop = datetime.now().date()
 
     date_start = st.date_input("Start date", value=default_start)
     date_stop = st.date_input("Stop date", value=default_stop)
@@ -94,4 +95,25 @@ if st.session_state.logged_in or ("show_logged_in" in locals() and show_logged_i
         st.dataframe(st.session_state.fixtures_df)
         csv = st.session_state.fixtures_df.to_csv(index=False).encode("utf-8")
         st.download_button("Download CSV", data=csv, file_name="fixtures.csv", mime="text/csv")
+        
+        # Plot events by type
+        if "event_type_type" in st.session_state.fixtures_df.columns:
+            counts = (
+                st.session_state.fixtures_df["event_type_type"]
+                .fillna("Unknown")
+                .value_counts()
+                .reset_index(name="count")
+                .rename(columns={"index": "event_type_type"})
+            )
+            fig = px.bar(
+                counts,
+                x="event_type_type",
+                y="count",
+                color="event_type_type",
+                labels={"event_type_type": "Event type", "count": "Event count"},
+                title=f"Events by type for player {player_key} and date {date_start_str} to {date_stop_str}" if player_key else f"Events by type for date {date_start_str} to {date_stop_str}",
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("No `event_type_type` column available to plot.")
 
