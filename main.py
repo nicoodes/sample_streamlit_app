@@ -18,12 +18,7 @@ DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
 
-# Debug: Print what we got (remove password from logs!)
-print(f"DB_USER: {DB_USER is not None and len(DB_USER) > 0}")
-print(f"DB_PASSWORD: {DB_PASSWORD is not None and len(DB_PASSWORD) > 0}")
-print(f"DB_HOST: {DB_HOST}")
-print(f"DB_PORT: {DB_PORT}")
-print(f"DB_NAME: {DB_NAME}")
+
 
 def fetch_and_insert_today_fixtures():
     """
@@ -59,6 +54,12 @@ def fetch_and_insert_today_fixtures():
 
 
 if __name__ == "__main__":
+    # Debug: Print what we got (remove password from logs!)
+    print(f"DB_USER: {DB_USER is not None and len(DB_USER) > 0}")
+    print(f"DB_PASSWORD: {DB_PASSWORD is not None and len(DB_PASSWORD) > 0}")
+    print(f"DB_HOST: {DB_HOST}")
+    print(f"DB_PORT: {DB_PORT}")
+    print(f"DB_NAME: {DB_NAME}")
     # Run the main function
     result = fetch_and_insert_today_fixtures()
     print(result["message"])
